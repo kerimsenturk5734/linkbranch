@@ -1,5 +1,6 @@
 package com.kerimsenturk.linkbranch.model;
 
+import com.kerimsenturk.linkbranch.model.enums.UserType;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,14 +13,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "uid")
     private int uuid;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "lastname")
     private String lastname;
+
     @Column(name = "username")
     private String username;
+
     @Column(name = "password")
     private String password;
+
     @Column(name = "mail")
     private String mail;
 
@@ -27,9 +33,12 @@ public class User {
     @Column(name = "user_type")
     private UserType userType;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Link> links;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private Profile profile;
 
     public User() {
     }

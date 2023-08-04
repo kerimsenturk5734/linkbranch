@@ -1,5 +1,6 @@
 package com.kerimsenturk.linkbranch.model;
 
+import com.kerimsenturk.linkbranch.model.enums.LinkCategory;
 import jakarta.persistence.*;
 
 @Table(name = "links")
