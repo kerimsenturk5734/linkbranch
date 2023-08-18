@@ -1,4 +1,4 @@
-package com.kerimsenturk.linkbranch.model.dto;
+package com.kerimsenturk.linkbranch.dto;
 
 import com.kerimsenturk.linkbranch.model.enums.UserType;
 

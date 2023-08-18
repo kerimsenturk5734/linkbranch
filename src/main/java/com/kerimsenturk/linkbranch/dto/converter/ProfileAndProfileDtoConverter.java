@@ -1,7 +1,7 @@
-package com.kerimsenturk.linkbranch.model.dto.converter;
+package com.kerimsenturk.linkbranch.dto.converter;
 
+import com.kerimsenturk.linkbranch.dto.ProfileDto;
 import com.kerimsenturk.linkbranch.model.Profile;
-import com.kerimsenturk.linkbranch.model.dto.ProfileDto;
 import com.kerimsenturk.linkbranch.util.ObjectConverter.Convertable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;

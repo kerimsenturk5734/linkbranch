@@ -2,7 +2,7 @@ package com.kerimsenturk.linkbranch.controller;
 
 
 import com.kerimsenturk.linkbranch.model.User;
-import com.kerimsenturk.linkbranch.model.dto.converter.UserAndUserDtoConverter;
+import com.kerimsenturk.linkbranch.dto.converter.UserAndUserDtoConverter;
 import com.kerimsenturk.linkbranch.model.enums.UserType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
