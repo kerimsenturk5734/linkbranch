@@ -2,6 +2,8 @@ package com.kerimsenturk.linkbranch.model.dto;
 
 import com.kerimsenturk.linkbranch.model.enums.UserType;
 
+import java.util.List;
+
 public class UserDto {
 
     private int uuid;
