@@ -20,4 +20,55 @@ public class Profile {
 
     @OneToOne(mappedBy = "profile")
     private User user;
+
+    public Profile() {
+    }
+
+    public Profile(int id, String description, byte[] profileImage, ProfileTheme theme, User user) {
+        this.id = id;
+        this.description = description;
+        this.profileImage = profileImage;
+        this.theme = theme;
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public ProfileTheme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(ProfileTheme theme) {
+        this.theme = theme;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
