@@ -23,11 +23,12 @@ public class Link {
     public Link() {
     }
 
-    public Link(int id, String url, byte[] icon, LinkCategory category) {
+    public Link(int id, String url, byte[] icon, LinkCategory category, User user) {
         this.id = id;
         this.url = url;
         this.icon = icon;
         this.category = category;
+        this.user = user;
     }
 
     public int getId() {
