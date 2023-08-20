@@ -14,4 +14,12 @@ public class HttpResult extends Result{
         super(success, message);
         this.status = status;
     }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
 }
