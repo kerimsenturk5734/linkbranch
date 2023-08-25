@@ -17,16 +17,22 @@ public class LinkAndLinkDtoConverter implements Convertable<Link, LinkDto> {
 
     @Override
     public LinkDto convert(Link link) {
+        if(link == null)
+            return new LinkDto();
+
         return new LinkDto(
                 link.getId(),
                 link.getUrl(),
                 link.getIcon(),
                 link.getCategory(),
-                userAndUserDtoConverter.convert(link.getUser()));
+                null);
     }
 
     @Override
     public Link deConvert(LinkDto linkDto) {
+        if(linkDto == null)
+            return new Link();
+
         return new Link(
                 linkDto.getId(),
                 linkDto.getUrl(),
