@@ -6,12 +6,11 @@ import com.kerimsenturk.linkbranch.dto.request.LoginRequest;
 import com.kerimsenturk.linkbranch.dto.response.LoginResponse;
 import com.kerimsenturk.linkbranch.model.User;
 import com.kerimsenturk.linkbranch.repository.UserRepository;
-import com.kerimsenturk.linkbranch.util.Result.DataResult;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
-import com.kerimsenturk.linkbranch.util.Result.HttpResult;
-import com.kerimsenturk.linkbranch.util.Result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class UserService implements IUserService {
@@ -28,11 +27,67 @@ public class UserService implements IUserService {
         User user = userRepository.getUserByUsername(username);
         //validate user
         if(user == null)
-            return new HttpDataResult<UserDto>(null, false, "User Not Found", HttpStatus.NOT_FOUND);
+            return new HttpDataResult<UserDto>(
+                    null,
+                    false,
+                    String.format("User Not Found with username = %s", username),
+                    HttpStatus.NOT_FOUND);
 
         //convert user to UserDto
         UserDto userDto = userAndUserDtoConverter.convert(user);
 
         return new HttpDataResult<>(userDto, true, HttpStatus.OK);
+    }
+
+    @Override
+    public HttpDataResult<UserDto> getUserByUuid(int uuid) {
+        User user = userRepository.getUserByUuid(uuid);
+        //validate user
+        if(user == null)
+            return new HttpDataResult<UserDto>(
+                    null,
+                    false,
+                    String.format("User Not Found with uuid = %d", uuid),
+                    HttpStatus.NOT_FOUND);
+
+        //convert user to UserDto
+        UserDto userDto = userAndUserDtoConverter.convert(user);
+
+        return new HttpDataResult<>(userDto, true, HttpStatus.OK);
+    }
+
+    @Override
+    public HttpDataResult<LoginResponse> login(LoginRequest loginRequest) {
+        User user = userRepository.getUserByUsername(loginRequest.getUsername());
+        //validate user
+        if(user == null)
+            return new HttpDataResult<LoginResponse>(
+                    null,
+                    false,
+                    String.format("User Not Found with username = %s", loginRequest.getUsername()),
+                    HttpStatus.NOT_FOUND);
+
+        else{
+            if(Objects.equals(loginRequest.getPassword(), user.getPassword())){
+                //fill the loginResponse
+                LoginResponse loginResponse = new LoginResponse();
+
+                return new HttpDataResult<LoginResponse>(
+                        loginResponse,
+                        true,
+                        String.format(
+                                "Successfully logged with username = %s, password = %s",
+                                loginRequest.getUsername(),
+                                user.getPassword()),
+                        HttpStatus.OK);
+            }
+            else{
+                return new HttpDataResult<LoginResponse>(
+                        null,
+                        false,
+                        String.format("Your password is incorrect password = %s", loginRequest.getPassword()),
+                        HttpStatus.UNAUTHORIZED);
+            }
+        }
     }
 }
