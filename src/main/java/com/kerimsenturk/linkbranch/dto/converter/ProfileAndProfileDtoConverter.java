@@ -16,16 +16,27 @@ public class ProfileAndProfileDtoConverter implements Convertable<Profile, Profi
 
     @Override
     public ProfileDto convert(Profile profile) {
+        if (profile == null)
+            return new ProfileDto();
+
         return new ProfileDto(
                 profile.getId(),
                 profile.getDescription(),
                 profile.getProfileImage(),
                 profile.getTheme(),
-                userAndUserDtoConverter.convert(profile.getUser()));
+                null);
     }
 
     @Override
     public Profile deConvert(ProfileDto profileDto) {
-        return null;
+        if(profileDto == null)
+            return new Profile();
+
+        return new Profile(
+                profileDto.getId(),
+                profileDto.getDescription(),
+                profileDto.getProfileImage(),
+                profileDto.getTheme(),
+                userAndUserDtoConverter.deConvert(profileDto.getUser()));
     }
 }

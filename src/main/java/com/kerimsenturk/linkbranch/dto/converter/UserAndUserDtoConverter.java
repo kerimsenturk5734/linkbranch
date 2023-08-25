@@ -20,6 +20,9 @@ public class UserAndUserDtoConverter implements Convertable<User, UserDto> {
 
     @Override
     public UserDto convert(User user) {
+        if(user == null)
+            return new UserDto();
+
         return new UserDto(
                 user.getUuid(),
                 user.getName(),
@@ -36,6 +39,16 @@ public class UserAndUserDtoConverter implements Convertable<User, UserDto> {
 
     @Override
     public User deConvert(UserDto userDto) {
-        return null;
+        if(userDto == null)
+            return new User();
+
+        return new User(
+                userDto.getUuid(),
+                userDto.getName(),
+                userDto.getLastname(),
+                userDto.getUsername(),
+                null,
+                userDto.getMail(),
+                userDto.getUserType());
     }
 }
