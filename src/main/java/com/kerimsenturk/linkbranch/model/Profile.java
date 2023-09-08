@@ -1,5 +1,6 @@
 package com.kerimsenturk.linkbranch.model;
 
+import com.kerimsenturk.linkbranch.model.builder.ProfileBuilder;
 import com.kerimsenturk.linkbranch.model.enums.ProfileTheme;
 import jakarta.persistence.*;
 
@@ -22,6 +23,14 @@ public class Profile {
     private User user;
 
     public Profile() {
+    }
+
+    public Profile(ProfileBuilder profileBuilder) {
+        this.id = profileBuilder.getId();
+        this.description = profileBuilder.getDescription();
+        this.profileImage = profileBuilder.getProfileImage();
+        this.theme = profileBuilder.getTheme();
+        this.user = profileBuilder.getUser();
     }
 
     public Profile(int id, String description, byte[] profileImage, ProfileTheme theme, User user) {
