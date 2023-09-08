@@ -5,6 +5,9 @@ import com.kerimsenturk.linkbranch.dto.UserDto;
 import com.kerimsenturk.linkbranch.util.ObjectConverter.Convertable;
 
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,7 +33,8 @@ public class UserAndUserDtoConverter implements Convertable<User, UserDto> {
                 user.getUsername(),
                 user.getMail(),
                 user.getUserType(),
-                user.getLinks()
+                Optional.ofNullable(user.getLinks())
+                        .orElse(new ArrayList<>())
                         .stream()
                         .map(linkAndLinkDtoConverter :: convert)
                         .collect(Collectors.toList()),
