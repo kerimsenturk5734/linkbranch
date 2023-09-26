@@ -7,6 +7,8 @@ import com.kerimsenturk.linkbranch.dto.request.RegisterRequest;
 import com.kerimsenturk.linkbranch.dto.response.LoginResponse;
 import com.kerimsenturk.linkbranch.dto.response.RegisterResponse;
 import com.kerimsenturk.linkbranch.model.User;
+import com.kerimsenturk.linkbranch.model.builder.ProfileBuilder;
+import com.kerimsenturk.linkbranch.model.builder.ProfileConfig;
 import com.kerimsenturk.linkbranch.repository.UserRepository;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
 import org.springframework.http.HttpStatus;
@@ -94,8 +96,6 @@ public class UserService implements IUserService {
         }
     }
 
-
-
     @Override
     public HttpDataResult<RegisterResponse> register(RegisterRequest registerRequest) {
 
@@ -117,11 +117,14 @@ public class UserService implements IUserService {
                         registerRequest.getMail(),
                         registerRequest.getUserType());
 
+                newUser.setProfile(new ProfileBuilder().build(ProfileConfig.DEFAULT_CONFIG));
+
                 //Save the user
                 User createdUser = userRepository.save(newUser);
                 UserDto createdUserDto = userAndUserDtoConverter.convert(createdUser);
 
                 //Create the RegisterResponse
+                //To get the system time as process time might not provide the right time of inserting into db!!!
                 registerResponse = new RegisterResponse(createdUserDto, new Date(System.currentTimeMillis()));
 
                 //Create and return HttpDataResult with RegisterResponse
