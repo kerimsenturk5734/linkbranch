@@ -7,13 +7,15 @@ import jakarta.persistence.*;
 @Entity
 public class Link {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     @Column(name = "name")
     private String name;
     @Column(name = "url")
     private String url;
-    @Column(name = "icon")
+    @Lob
+    @Column(name = "icon", columnDefinition = "blob")
     private byte[] icon;
     @Enumerated(EnumType.STRING)
     @Column(name = "category")

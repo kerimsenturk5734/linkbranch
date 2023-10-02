@@ -45,7 +45,7 @@ public class LinkService implements ILinkService{
                 createLinkRequest.url(),
                 solvedIcon,
                 createLinkRequest.linkCategory(),
-                null);
+                null); // Get the current user on site and set here.
 
         LinkDto addLinkDto = linkAndLinkDtoConverter.convert(linkRepository.save(link));
 
