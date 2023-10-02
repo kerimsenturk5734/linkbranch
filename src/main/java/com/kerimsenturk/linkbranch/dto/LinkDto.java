@@ -4,6 +4,7 @@ import com.kerimsenturk.linkbranch.model.enums.LinkCategory;
 
 public class LinkDto {
     private int id;
+    private String name;
     private String url;
     private byte[] icon;
     private LinkCategory category;
@@ -12,8 +13,9 @@ public class LinkDto {
     public LinkDto() {
     }
 
-    public LinkDto(int id, String url, byte[] icon, LinkCategory category, UserDto user) {
+    public LinkDto(int id, String name, String url, byte[] icon, LinkCategory category, UserDto user) {
         this.id = id;
+        this.name = name;
         this.url = url;
         this.icon = icon;
         this.category = category;
@@ -26,6 +28,14 @@ public class LinkDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUrl() {

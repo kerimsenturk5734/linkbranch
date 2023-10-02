@@ -22,6 +22,7 @@ public class LinkAndLinkDtoConverter implements Convertable<Link, LinkDto> {
 
         return new LinkDto(
                 link.getId(),
+                link.getName(),
                 link.getUrl(),
                 link.getIcon(),
                 link.getCategory(),
@@ -35,6 +36,7 @@ public class LinkAndLinkDtoConverter implements Convertable<Link, LinkDto> {
 
         return new Link(
                 linkDto.getId(),
+                linkDto.getName(),
                 linkDto.getUrl(),
                 linkDto.getIcon(),
                 linkDto.getCategory(),

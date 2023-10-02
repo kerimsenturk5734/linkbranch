@@ -41,6 +41,7 @@ public class LinkService implements ILinkService{
 
         //Create new Link object
         Link link = new Link(0,
+                createLinkRequest.name(),
                 createLinkRequest.url(),
                 solvedIcon,
                 createLinkRequest.linkCategory(),

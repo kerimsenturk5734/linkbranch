@@ -9,6 +9,8 @@ public class Link {
     @Id
     @Column(name = "id")
     private int id;
+    @Column(name = "name")
+    private String name;
     @Column(name = "url")
     private String url;
     @Column(name = "icon")
@@ -23,8 +25,9 @@ public class Link {
     public Link() {
     }
 
-    public Link(int id, String url, byte[] icon, LinkCategory category, User user) {
+    public Link(int id, String name, String url, byte[] icon, LinkCategory category, User user) {
         this.id = id;
+        this.name = name;
         this.url = url;
         this.icon = icon;
         this.category = category;
@@ -37,6 +40,14 @@ public class Link {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUrl() {
