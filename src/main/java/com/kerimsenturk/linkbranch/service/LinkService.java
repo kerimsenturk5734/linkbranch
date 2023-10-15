@@ -8,6 +8,7 @@ import com.kerimsenturk.linkbranch.repository.LinkRepository;
 import com.kerimsenturk.linkbranch.util.IconManager.IconManager;
 import com.kerimsenturk.linkbranch.util.IconManager.IconSize;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
+import com.kerimsenturk.linkbranch.util.Result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -53,17 +54,53 @@ public class LinkService implements ILinkService{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public HttpDataResult<List<LinkDto>> findAllByUser_Username(String username) {
-        return null;
+        //Get links
+        List<Link> links = linkRepository.findAllByUser_Username(username);
+
+        //Handle if not found
+        if(links.isEmpty())
+           return (HttpDataResult<List<LinkDto>>) notFoundResult(String.format("Links not found by username = %s", username));
+
+        //Convert to dto
+        List<LinkDto> linkDtos = links
+                .stream()
+                .map(linkAndLinkDtoConverter::convert)
+                .toList();
+
+        return new HttpDataResult<List<LinkDto>>(linkDtos, true, HttpStatus.OK);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public HttpDataResult<List<LinkDto>> findAllByUser_Uuid(int uuid) {
-        return null;
+        //Get links
+        List<Link> links = linkRepository.findAllByUser_Uuid(uuid);
+
+        //Handle if not found
+        if(links.isEmpty())
+            return (HttpDataResult<List<LinkDto>>) notFoundResult(String.format("Links not found by uuid = %s", uuid));
+
+        //Convert to dto
+        List<LinkDto> linkDtos = links
+                .stream()
+                .map(linkAndLinkDtoConverter::convert)
+                .toList();
+
+        return new HttpDataResult<List<LinkDto>>(linkDtos, true, HttpStatus.OK);
     }
 
     @Override
     public HttpDataResult<LinkDto> removeLinkById(int id) {
         return null;
+    }
+
+    private Result notFoundResult(String message){
+        return new HttpDataResult<>(
+                null,
+                false,
+                message,
+                HttpStatus.NOT_FOUND);
     }
 }

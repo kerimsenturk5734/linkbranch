@@ -6,10 +6,9 @@ import com.kerimsenturk.linkbranch.service.ILinkService;
 import com.kerimsenturk.linkbranch.service.LinkService;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/links")
@@ -25,15 +24,18 @@ public class LinkController {
         HttpDataResult<LinkDto> httpDataResult = linkService.addLink(createLinkRequest);
         return ResponseEntity.status(httpDataResult.getStatus()).body(httpDataResult);
     }
+
+    @GetMapping("/getAllByUsername")
     public ResponseEntity<?> findAllByUser_Username(String username) {
-        return null;
+        HttpDataResult<List<LinkDto>> httpDataResult = linkService.findAllByUser_Username(username);
+        return ResponseEntity.status(httpDataResult.getStatus()).body(httpDataResult);
     }
 
+    @GetMapping("/getAllByUUID")
     public ResponseEntity<?> findAllByUser_Uuid(int uuid) {
-        return null;
+        HttpDataResult<List<LinkDto>> httpDataResult = linkService.findAllByUser_Uuid(uuid);
+        return ResponseEntity.status(httpDataResult.getStatus()).body(httpDataResult);
     }
 
-    public ResponseEntity<?> removeLinkById(int id) {
-        return null;
-    }
+
 }
