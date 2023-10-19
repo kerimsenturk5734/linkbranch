@@ -10,5 +10,4 @@ import java.util.List;
 public interface LinkRepository extends JpaRepository<Link, Integer> {
     List<Link> findAllByUser_Username(String username);
     List<Link> findAllByUser_Uuid(int uuid);
-    Link removeLinkById(int id);
 }

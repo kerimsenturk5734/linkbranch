@@ -3,17 +3,20 @@ package com.kerimsenturk.linkbranch.service;
 import com.kerimsenturk.linkbranch.dto.LinkDto;
 import com.kerimsenturk.linkbranch.dto.converter.LinkAndLinkDtoConverter;
 import com.kerimsenturk.linkbranch.dto.request.CreateLinkRequest;
+import com.kerimsenturk.linkbranch.dto.request.RemoveLinkRequest;
 import com.kerimsenturk.linkbranch.model.Link;
 import com.kerimsenturk.linkbranch.repository.LinkRepository;
 import com.kerimsenturk.linkbranch.util.IconManager.IconManager;
 import com.kerimsenturk.linkbranch.util.IconManager.IconSize;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
+import com.kerimsenturk.linkbranch.util.Result.HttpResult;
 import com.kerimsenturk.linkbranch.util.Result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LinkService implements ILinkService{
@@ -61,7 +64,7 @@ public class LinkService implements ILinkService{
 
         //Handle if not found
         if(links.isEmpty())
-           return (HttpDataResult<List<LinkDto>>) notFoundResult(String.format("Links not found by username = %s", username));
+           return (HttpDataResult<List<LinkDto>>) notFoundDataResult(String.format("Links not found by username = %s", username));
 
         //Convert to dto
         List<LinkDto> linkDtos = links
@@ -80,7 +83,7 @@ public class LinkService implements ILinkService{
 
         //Handle if not found
         if(links.isEmpty())
-            return (HttpDataResult<List<LinkDto>>) notFoundResult(String.format("Links not found by uuid = %s", uuid));
+            return (HttpDataResult<List<LinkDto>>) notFoundDataResult(String.format("Links not found by uuid = %s", uuid));
 
         //Convert to dto
         List<LinkDto> linkDtos = links
@@ -92,13 +95,44 @@ public class LinkService implements ILinkService{
     }
 
     @Override
-    public HttpDataResult<LinkDto> removeLinkById(int id) {
-        return null;
+    public HttpResult removeLink(RemoveLinkRequest removeLinkRequest) {
+        Optional<Link> linkOptional = linkRepository.findById(removeLinkRequest.linkId());
+
+        if(linkOptional.isPresent()){
+            Link link = linkOptional.get();
+
+            if(link.getUser().getUuid() == removeLinkRequest.uuid()){
+
+                linkRepository.deleteById(removeLinkRequest.linkId());
+
+                return new HttpResult(
+                        true,
+                        String.format("The link successfully removed by linkId: %d", link.getId()),
+                        HttpStatus.ACCEPTED);
+
+            }
+
+            return new HttpResult(
+                    false,
+                    "Access Denied!!!",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        return (HttpResult) notFoundResult(
+                String.format("Indicated link not found by linkId: %d", removeLinkRequest.linkId()));
+    }
+
+    //It doesn't matter if HttpDataResult's empty because it has not found and not has data
+    private Result notFoundDataResult(String message){
+        return new HttpDataResult<>(
+                null,
+                false,
+                message,
+                HttpStatus.NOT_FOUND);
     }
 
     private Result notFoundResult(String message){
-        return new HttpDataResult<>(
-                null,
+        return new HttpResult(
                 false,
                 message,
                 HttpStatus.NOT_FOUND);
