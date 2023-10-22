@@ -22,4 +22,11 @@ public class HttpResult extends Result{
     public void setStatus(HttpStatus status) {
         this.status = status;
     }
+
+    public static HttpResult notFoundResult(String message){
+        return new HttpResult(
+                false,
+                message,
+                HttpStatus.NOT_FOUND);
+    }
 }

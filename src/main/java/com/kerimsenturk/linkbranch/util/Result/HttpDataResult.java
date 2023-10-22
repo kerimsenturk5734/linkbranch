@@ -22,4 +22,20 @@ public class HttpDataResult<T> extends DataResult<T>{
     public void setStatus(HttpStatus status) {
         this.status = status;
     }
+
+    public static <T> HttpDataResult<T> notFoundResult(String message){
+        return new HttpDataResult<T>(
+                null,
+                false,
+                message,
+                HttpStatus.NOT_FOUND);
+    }
+
+    public static <T> HttpDataResult<T> notFoundResult(T data, String message){
+        return new HttpDataResult<T>(
+                data,
+                false,
+                message,
+                HttpStatus.NOT_FOUND);
+    }
 }

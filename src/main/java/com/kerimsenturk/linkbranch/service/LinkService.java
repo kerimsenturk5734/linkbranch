@@ -57,14 +57,13 @@ public class LinkService implements ILinkService{
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public HttpDataResult<List<LinkDto>> findAllByUser_Username(String username) {
         //Get links
         List<Link> links = linkRepository.findAllByUser_Username(username);
 
         //Handle if not found
         if(links.isEmpty())
-           return (HttpDataResult<List<LinkDto>>) notFoundDataResult(String.format("Links not found by username = %s", username));
+           return HttpDataResult.notFoundResult(String.format("Links not found by username = %s", username));
 
         //Convert to dto
         List<LinkDto> linkDtos = links
@@ -76,14 +75,13 @@ public class LinkService implements ILinkService{
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public HttpDataResult<List<LinkDto>> findAllByUser_Uuid(int uuid) {
         //Get links
         List<Link> links = linkRepository.findAllByUser_Uuid(uuid);
 
         //Handle if not found
         if(links.isEmpty())
-            return (HttpDataResult<List<LinkDto>>) notFoundDataResult(String.format("Links not found by uuid = %s", uuid));
+            return HttpDataResult.notFoundResult(String.format("Links not found by uuid = %s", uuid));
 
         //Convert to dto
         List<LinkDto> linkDtos = links
@@ -118,23 +116,7 @@ public class LinkService implements ILinkService{
                     HttpStatus.FORBIDDEN);
         }
 
-        return (HttpResult) notFoundResult(
-                String.format("Indicated link not found by linkId: %d", removeLinkRequest.linkId()));
+        return HttpResult.notFoundResult(String.format("Indicated link not found by linkId: %d", removeLinkRequest.linkId()));
     }
 
-    //It doesn't matter if HttpDataResult's empty because it has not found and not has data
-    private Result notFoundDataResult(String message){
-        return new HttpDataResult<>(
-                null,
-                false,
-                message,
-                HttpStatus.NOT_FOUND);
-    }
-
-    private Result notFoundResult(String message){
-        return new HttpResult(
-                false,
-                message,
-                HttpStatus.NOT_FOUND);
-    }
 }
