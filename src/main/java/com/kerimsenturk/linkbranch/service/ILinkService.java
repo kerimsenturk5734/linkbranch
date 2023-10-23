@@ -3,6 +3,7 @@ package com.kerimsenturk.linkbranch.service;
 import com.kerimsenturk.linkbranch.dto.LinkDto;
 import com.kerimsenturk.linkbranch.dto.request.CreateLinkRequest;
 import com.kerimsenturk.linkbranch.dto.request.RemoveLinkRequest;
+import com.kerimsenturk.linkbranch.dto.request.UpdateLinkRequest;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
 import com.kerimsenturk.linkbranch.util.Result.HttpResult;
 
@@ -13,4 +14,5 @@ public interface ILinkService {
     HttpDataResult<List<LinkDto>> findAllByUser_Username(String username);
     HttpDataResult<List<LinkDto>>  findAllByUser_Uuid(int uuid);
     HttpResult removeLink(RemoveLinkRequest removeLinkRequest);
+    HttpDataResult<LinkDto>  updateLink(UpdateLinkRequest updateLinkRequest);
 }

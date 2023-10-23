@@ -3,6 +3,7 @@ package com.kerimsenturk.linkbranch.controller;
 import com.kerimsenturk.linkbranch.dto.LinkDto;
 import com.kerimsenturk.linkbranch.dto.request.CreateLinkRequest;
 import com.kerimsenturk.linkbranch.dto.request.RemoveLinkRequest;
+import com.kerimsenturk.linkbranch.dto.request.UpdateLinkRequest;
 import com.kerimsenturk.linkbranch.service.ILinkService;
 import com.kerimsenturk.linkbranch.service.LinkService;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
@@ -44,6 +45,12 @@ public class LinkController {
     @Transactional
     public ResponseEntity<?> removeLink(@RequestBody RemoveLinkRequest removeLinkRequest) {
         HttpResult httpResult = linkService.removeLink(removeLinkRequest);
+        return ResponseEntity.status(httpResult.getStatus()).body(httpResult);
+    }
+
+    @PatchMapping("/updateLink")
+    public ResponseEntity<?> updateLink(@RequestBody UpdateLinkRequest updateLinkRequest){
+        HttpDataResult<LinkDto>  httpResult = linkService.updateLink(updateLinkRequest);
         return ResponseEntity.status(httpResult.getStatus()).body(httpResult);
     }
 }

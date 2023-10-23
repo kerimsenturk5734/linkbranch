@@ -1,16 +1,18 @@
 package com.kerimsenturk.linkbranch.service;
 
 import com.kerimsenturk.linkbranch.dto.LinkDto;
+import com.kerimsenturk.linkbranch.dto.UserDto;
 import com.kerimsenturk.linkbranch.dto.converter.LinkAndLinkDtoConverter;
+import com.kerimsenturk.linkbranch.dto.converter.UserAndUserDtoConverter;
 import com.kerimsenturk.linkbranch.dto.request.CreateLinkRequest;
 import com.kerimsenturk.linkbranch.dto.request.RemoveLinkRequest;
+import com.kerimsenturk.linkbranch.dto.request.UpdateLinkRequest;
 import com.kerimsenturk.linkbranch.model.Link;
 import com.kerimsenturk.linkbranch.repository.LinkRepository;
 import com.kerimsenturk.linkbranch.util.IconManager.IconManager;
 import com.kerimsenturk.linkbranch.util.IconManager.IconSize;
 import com.kerimsenturk.linkbranch.util.Result.HttpDataResult;
 import com.kerimsenturk.linkbranch.util.Result.HttpResult;
-import com.kerimsenturk.linkbranch.util.Result.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +25,14 @@ public class LinkService implements ILinkService{
     private final LinkRepository linkRepository;
     private final LinkAndLinkDtoConverter linkAndLinkDtoConverter;
     private final IconManager iconManager;
-
-    public LinkService(LinkRepository linkRepository, LinkAndLinkDtoConverter linkAndLinkDtoConverter, IconManager iconManager) {
+    private final UserService userService;
+    private final UserAndUserDtoConverter userAndUserDtoConverter;
+    public LinkService(LinkRepository linkRepository, LinkAndLinkDtoConverter linkAndLinkDtoConverter, IconManager iconManager, UserService userService, UserAndUserDtoConverter userAndUserDtoConverter) {
         this.linkRepository = linkRepository;
         this.linkAndLinkDtoConverter = linkAndLinkDtoConverter;
         this.iconManager = iconManager;
+        this.userService = userService;
+        this.userAndUserDtoConverter = userAndUserDtoConverter;
     }
 
     @Override
@@ -43,17 +48,30 @@ public class LinkService implements ILinkService{
             solvedIcon = new byte[1024];
         }
 
-        //Create new Link object
-        Link link = new Link(0,
-                createLinkRequest.name(),
-                createLinkRequest.url(),
-                solvedIcon,
-                createLinkRequest.linkCategory(),
-                null); // Get the current user on site and set here.
+        HttpDataResult<UserDto> httpDataResult = userService.getUserByUuid(createLinkRequest.uuid());
 
-        LinkDto addLinkDto = linkAndLinkDtoConverter.convert(linkRepository.save(link));
+        if(httpDataResult.isSuccess()){
 
-        return new HttpDataResult<LinkDto>(addLinkDto, true, HttpStatus.CREATED);
+            //Create new Link object
+            Link link = new Link(0,
+                    createLinkRequest.name(),
+                    createLinkRequest.url(),
+                    solvedIcon,
+                    createLinkRequest.linkCategory(),
+                    userAndUserDtoConverter.deConvert(httpDataResult.getData()));
+
+            LinkDto addLinkDto = linkAndLinkDtoConverter.convert(linkRepository.save(link));
+
+            return new HttpDataResult<LinkDto>(addLinkDto, true, HttpStatus.CREATED);
+        }
+
+
+        return new HttpDataResult<LinkDto>(
+                null,
+                false,
+                httpDataResult.getMessage(),
+                httpDataResult.getStatus());
+
     }
 
     @Override
@@ -117,6 +135,59 @@ public class LinkService implements ILinkService{
         }
 
         return HttpResult.notFoundResult(String.format("Indicated link not found by linkId: %d", removeLinkRequest.linkId()));
+    }
+
+    @Override
+    public HttpDataResult<LinkDto> updateLink(UpdateLinkRequest updateLinkRequest) {
+        //Get related link
+        Optional<Link> link = linkRepository.findById(updateLinkRequest.linkId());
+
+        //Check is it exist
+        if(link.isPresent()){
+
+            //Compare the request uuid and uuid of related link
+            if(link.get().getUser().getUuid() == updateLinkRequest.uuid()){
+                Link linkToUpdate = link.get();
+
+                //Update the fields
+                linkToUpdate.setName(updateLinkRequest.name());
+                linkToUpdate.setUrl(updateLinkRequest.url());
+                linkToUpdate.setCategory(updateLinkRequest.linkCategory());
+
+                //Solve new icon if url changed.
+                if(link.get().getUrl().equals(linkToUpdate.getUrl())){
+
+                    try{
+                        byte[] newIcon = iconManager.solveBySiteURL(linkToUpdate.getUrl(), IconSize._16);
+                        linkToUpdate.setIcon(newIcon);
+                    }
+                    catch (IOException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                //Update it and get updated link to response back.
+                Link updatedLink = linkRepository.save(linkToUpdate);
+                LinkDto updatedLinkDto = linkAndLinkDtoConverter.convert(updatedLink);
+
+                return new HttpDataResult<>(
+                        updatedLinkDto,
+                        true,
+                        String.format("Link updated by linkId: %d", updateLinkRequest.linkId()),
+                        HttpStatus.OK
+                );
+            }
+
+            return new HttpDataResult<>(
+                    null,
+                    false,
+                    "Access Denied",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        return HttpDataResult.notFoundResult(
+                String.format("Not Found link by linkId: %d", updateLinkRequest.linkId()));
     }
 
 }
